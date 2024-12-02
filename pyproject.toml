@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "Garden"
+version = "0.1.0.dev0"
+description = "This Python-based framework integrates various data analysis techniques, including statistics, deep learning, and machine learning, enabling users without coding knowledge to easily utilize them through an intuitive graphical user interface (GUI)."
+readme = { file = "README.md", content-type = "text/markdown" }
+license = {file = "LICENSE.txt"}
+authors = [
+  { name="gingerGarden", email="gooopylim@gmail.com" },
+]
+dependencies = [
+    "pandas>=2.2.0,<2.3.0",
+    "numpy>=1.19.0",
+    "opencv-python-headless>=4.10.0,<4.11.0",
+    "PyGithub>=2.4.0,<2.5.0",
+    "matplotlib>=3.9.0,<4.0.0",
+    "torch=2.5.1+cu124",
+    "torchaudio=2.5.1+cu124",
+    "torchvision=0.20.1+cu124",
+    "timm=1.0.11"
+]
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Repository" = "https://github.com/gingerGarden/Garden"
+
+[tool.hatch.envs.default]
+dependencies = [
+    "pytest>=7.0",
+    "black>=23.0",
+    "isort>=5.0",
+    "flake8>=6.0"
+]
