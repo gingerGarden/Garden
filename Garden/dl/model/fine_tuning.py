@@ -149,7 +149,7 @@ class Tuner:
             # 현재의 grad를 추가
             stack.append(current_grad)
 
-        _ = frequency_table(stack, markdown=True)
+        _ = frequency_table(data=stack, markdown=True)
         print(f"마지막 freezing layer: {end_of_freeze}")
 
 

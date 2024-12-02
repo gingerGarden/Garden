@@ -32,9 +32,7 @@ def min_max(array: np.ndarray) -> np.ndarray:
     return (array - min_score) / denominator
 
 
-def min_max_range_normalization(
-    array: np.ndarray, min: float, max: float
-) -> np.ndarray:
+def min_max_range_normalization(array: np.ndarray, min: float, max: float) -> np.ndarray:
     """
     min-max scaling의 공식을 확장을 이용해 데이터의 범위를 [min, max]로 변환
     >>> scaled_arr = ((arr - arr_min) / (arr_max - arr_min)) * (max_v - min_v) + min_v
@@ -89,9 +87,7 @@ def natural_logarithm(array: np.ndarray, very_small_value: int = 1e-8) -> np.nda
     return np.log(array)
 
 
-def robust(
-    array: np.ndarray, q1_ratio: float = 0.25, q3_ratio: float = 0.75
-) -> np.ndarray:
+def robust(array: np.ndarray, q1_ratio: float = 0.25, q3_ratio: float = 0.75) -> np.ndarray:
     """
     Robust Scaling: 이상치에 민감하지 않은 데이터 정규화 기법으로, 사분위 범위(IQT)를 사용하여 이상치의 영향을 최소화하여 스케일링.
     >>> 중앙값과 IQR(Interquartile Range)를 사용하여 데이터를 보다 안정적으로 스케일링

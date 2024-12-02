@@ -2,13 +2,13 @@ import random
 import warnings
 from typing import Callable, Dict, List, Optional, Tuple
 
-import GGStatify.distribution as dist
-import GGStatify.probability as prob
 import numpy as np
-from GGStatify import scaler
-from GGUtils.img.img import RGBTuple, get_img_axis_size, img_center
 
 from ..mask import mask as Mask
+from ....statics import distribution as dist
+from ....statics import probability as prob
+from ....statics import scaler
+from ....utils.img.img import RGBTuple, get_img_axis_size, img_center
 
 
 class Frame:

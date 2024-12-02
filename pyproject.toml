@@ -17,10 +17,10 @@ dependencies = [
     "opencv-python-headless>=4.10.0,<4.11.0",
     "PyGithub>=2.4.0,<2.5.0",
     "matplotlib>=3.9.0,<4.0.0",
-    "torch=2.5.1+cu124",
-    "torchaudio=2.5.1+cu124",
-    "torchvision=0.20.1+cu124",
-    "timm=1.0.11"
+    "torch>=2.5.1,<2.6.0",
+    "torchaudio>=2.5.1,<2.6.0",
+    "torchvision>=0.20.1,<0.21.0",
+    "timm==1.0.11"
 ]
 requires-python = ">=3.7"
 classifiers = [
