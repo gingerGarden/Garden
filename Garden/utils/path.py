@@ -9,6 +9,8 @@ import numpy as np
 import pandas as pd
 import requests
 
+from .utils import list_flatten
+
 
 def do_or_load(
     savepath: str, fn: Callable, makes_new: bool = False, *args, **kwargs
@@ -293,7 +295,7 @@ class GetAbsolutePath:
         Returns:
             List[str]: 하위 파일들의 절대 경로들이 들어가 있는 list
         """
-        from .utils import list_flatten
+        # from .utils import list_flatten/
 
         stack = []
         # os.walk를 통해 디렉터리 트리를 순차적으로 탐색하면서, 파일의 절대 경로를 list에 추가

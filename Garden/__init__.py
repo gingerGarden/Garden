@@ -1,3 +1,5 @@
+__version__ = "0.1.1.dev0"
+
 from .augment import img as aug_img
 from .dl import idx_dict, loader, metrics, model, pipeline
 from .statics import descript, distribution, probability, scaler
