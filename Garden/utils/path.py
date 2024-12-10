@@ -2,6 +2,7 @@ import json
 import os
 import pickle
 import shutil
+import logging
 from collections.abc import Callable
 from typing import Any, Dict, List, Optional, Union
 
@@ -209,25 +210,38 @@ def check_file_path_use_only_txt(txt: str) -> bool:
 
 
 def file_download(
-    url: str, local_path: str, kb: int = 8, wait: int = 10, overwrite: bool = False
-):
+    url: str, local_path: str, kb: int = 8, wait: int = 10, remove_old: bool = False
+) -> bool:
     """
-    file을 url로부터 다운로드 받는다.
+    url에 있는 file을 다운로드 한다.
 
     Args:
         url (str): file의 url
-        local_path (str): file을 url로부터 다운로드할 경로
-        kb (int, optional): kb. Defaults to 8.
-        wait (int, optional): 대기 시간. Defaults to 10.
-        overwrite (bool, optional): 덮어쓰기 여부. Defaults to False.
-    """
-    if os.path.exists(local_path):
-        if not overwrite:
-            print(
-                f"'{local_path}'가 이미 존재합니다. 덮어쓰기를 원한다면 overwrite를 True로 입력하십시오."
-            )
-            return
+        local_path (str): url 파일을 저장한 파일의 경로
+        kb (int, optional): 스트리밍으로 데이터를 받을 때 크기. Defaults to 8.
+        wait (int, optional): 응답이 없는 경우 최대 대기 시간. Defaults to 10.
+        remove_old (bool, optional): local_path가 이미 존재하는 경우, 기존 local_path 제거 여부. Defaults to False.
 
+    Raises:
+        ConnectionError: 타임아웃
+        ConnectionError: 연결 오류
+        ConnectionError: 요청 오류
+        ConnectionError: 파일 저장 오류
+
+    Returns:
+        bool: 다운로드 여부
+    """
+    # local_path가 이미 존재하는 경우, 행동
+    if os.path.exists(local_path):
+        if not remove_old:
+            logging.warning(f"'{local_path}'가 이미 존재합니다. 덮어쓰기를 원한다면 overwrite=True로 설정하십시오.")
+            return False
+        else:
+            # local_path 제거
+            if not remove_target_path(target_path=local_path):
+                return False
+        
+    # url로부터 데이터를 다운로드 받는다.
     try:
         response = requests.get(url, stream=True, timeout=wait)
         response.raise_for_status()  # 400, 500 오류인지 확인
@@ -236,23 +250,47 @@ def file_download(
             for chunk in response.iter_content(chunk_size=1024 * kb):
                 if chunk:  # 빈 청크가 아닌 경우에만 쓴다.
                     f.write(chunk)
-    except requests.exceptions.Timeout as e:
-        raise ConnectionError(
-            f"File 다운로드 실패! {url}에서 타임아웃이 발생했습니다! {e}"
-        ) from e
-    except requests.exceptions.ConnectionError as e:
-        raise ConnectionError(
-            f"파일 다운로드 실패! {url}에 연결할 수 없습니다! {e}"
-        ) from e
+        return True
+                    
+    # 통신 오류 
+    except requests.exceptions.Timeout:
+        raise ConnectionError(f"[타임아웃] {url}에서 응답이 없습니다. {wait}초 내에 다시 시도하세요.")
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError(f"[연결 오류] {url}에 연결할 수 없습니다.")
     except requests.exceptions.RequestException as e:
-        raise ConnectionError(
-            f"File 다운로드 실패! {url}이 다운로드 되지 않았습니다! {e}"
-        ) from e
+        raise ConnectionError(f"[요청 오류] {url}을(를) 다운로드할 수 없습니다. {e}")
     except OSError as e:
-        raise ConnectionError(
-            f"파일 저장 중 오류가 발생했습니다: {local_path} - {e}"
-        ) from e
+        raise ConnectionError(f"[파일 저장 오류] {local_path}에 파일을 저장할 수 없습니다. {e}")
+    
+    
+def remove_target_path(target_path: str) -> bool:
+    """
+    파일 또는 디렉터리를 제거합니다.
 
+    Args:
+        target_path (str): 제거하고자 하는 파일 또는 디렉터리의 경로
+
+    Returns:
+        bool: 제거 성공 여부
+    """
+    if os.path.exists(target_path):
+        try:
+            if os.path.isfile(target_path):
+                os.remove(target_path)
+            # 디렉터리 내부가 비어있는지 확인
+            else:
+                if not os.listdir(target_path):
+                    os.rmdir(target_path)
+                else:
+                    shutil.rmtree(target_path)
+            return True
+        except (PermissionError, OSError) as e:
+            logging.warning(f"'{target_path}' 제거 실패: {e}")
+            return False
+    else:
+        return False
+
+    
 
 class GetAbsolutePath:
 

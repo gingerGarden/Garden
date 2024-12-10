@@ -5,22 +5,39 @@ import warnings
 import pandas as pd
 from pprint import pprint
 
-from ..path import load_pickle, new_dir_maker
+from ..path import load_pickle, new_dir_maker, file_download
 
 
 class Get:
-    # data의 기본 url
-    urls = {
-        "student-mat":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-mat.pickle",
-        "student-por":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-por.pickle"
+    datas = {
+        "student-mat(tabular)":{
+            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-mat.pickle",
+            "type":"tabular",
+            "filename":"student-mat.pickle"
+            },
+        "student-por(tabular)":{
+            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-por.pickle",
+            "type":"tabular",
+            "filename":"student-por.pickle"
+        },
+        "coco(image)":{
+            "url":"",
+            "type":"zip",
+            "filename":"coco.zip"
+        }
     }
-    data_key = {
+    tabular_key = {
         "metadata":"metadata",
         "attribute":"attribute",
         "data":"data"
     }
-    parents_dir = ".garden"
-
+    
+    # 경로 정보
+    home_directory_path = os.path.expanduser("~")    
+    library_dir = ".garden"
+    data_dir = "data"
+    parents_path = f"{home_directory_path}/{library_dir}/{data_dir}"
+    
     @classmethod
     def show_data_list(cls) -> List[str]:
         """
@@ -29,8 +46,41 @@ class Get:
         Returns:
             List[str]: Garden에서 지원하는 데이터의 key list
         """
-        return list(cls.urls.keys())
+        return list(cls.datas.keys())
+    
+    @classmethod
+    def _download(cls, key:str, remove_old: bool = False) -> bool:
+        """
+        key에 해당하는 데이터를 다운로드 받는다
 
+        Args:
+            key (str): show_data_list에 속한 해당 library의 샘플 데이터
+            remove_old (bool, optional): 기존 데이터 제거 여부. Defaults to False.
+
+        Returns:
+            bool: 다운로드가 되었는지 여부
+        """
+        # 기초 디렉터리 생성(존재하지 않는 경우)
+        if not os.path.exists(cls.parents_path):
+            cls._make_base_directories()
+        # data의 url
+        url = cls.datas[key]['url']
+        # file 경로 생성
+        file_name = cls.datas[key]['filename']
+        file_path = f"{cls.parents_path}/{file_name}"
+        # file 다운로드 및 download 여부
+        downloaded = file_download(url, local_path=file_path, remove_old=remove_old)
+        return downloaded
+    
+    @classmethod
+    def _make_base_directories(cls):
+        """
+        데이터 다운로드를 위한 가장 기본적인 디렉터리들을 생성한다.
+        """
+        new_dir_maker(f"{cls.home_directory_path}/{cls.library_dir}", makes_new=False)
+        new_dir_maker(cls.parents_path, makes_new=False)
+    
+        
     @classmethod
     def load(
             cls, data_name: Optional[str] = None
