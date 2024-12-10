@@ -11,19 +11,19 @@ from ..path import load_pickle, new_dir_maker, file_download
 class Get:
     datas = {
         "student-mat(tabular)":{
-            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-mat.pickle",
             "type":"tabular",
-            "filename":"student-mat.pickle"
+            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-mat.pickle"
             },
         "student-por(tabular)":{
-            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-por.pickle",
             "type":"tabular",
-            "filename":"student-por.pickle"
+            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-por.pickle"
         },
         "coco(image)":{
-            "url":"",
             "type":"zip",
-            "filename":"coco.zip"
+            "url":{
+                "images":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_images.zip",
+                "annotations":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_annotaions.json"
+            }
         }
     }
     tabular_key = {
@@ -49,29 +49,16 @@ class Get:
         return list(cls.datas.keys())
     
     @classmethod
-    def _download(cls, key:str, remove_old: bool = False) -> bool:
-        """
-        key에 해당하는 데이터를 다운로드 받는다
-
-        Args:
-            key (str): show_data_list에 속한 해당 library의 샘플 데이터
-            remove_old (bool, optional): 기존 데이터 제거 여부. Defaults to False.
-
-        Returns:
-            bool: 다운로드가 되었는지 여부
-        """
+    def _download(cls, key: str, remove_old: bool = False) -> bool:
         # 기초 디렉터리 생성(존재하지 않는 경우)
         if not os.path.exists(cls.parents_path):
             cls._make_base_directories()
-        # data의 url
-        url = cls.datas[key]['url']
-        # file 경로 생성
-        file_name = cls.datas[key]['filename']
-        file_path = f"{cls.parents_path}/{file_name}"
-        # file 다운로드 및 download 여부
-        downloaded = file_download(url, local_path=file_path, remove_old=remove_old)
-        return downloaded
-    
+        # sample data의 type
+        sample_type = cls.datas[key]['type']
+        urls = cls.datas[key]['url']
+        # zip 파일이 존재하는 경우, zip을 푸는 코드 추가 개발할 것
+            
+            
     @classmethod
     def _make_base_directories(cls):
         """
@@ -79,8 +66,30 @@ class Get:
         """
         new_dir_maker(f"{cls.home_directory_path}/{cls.library_dir}", makes_new=False)
         new_dir_maker(cls.parents_path, makes_new=False)
-    
         
+    @classmethod
+    def _download_process(cls, url: str, remove_old: bool) -> bool:
+        """
+        url을 기반으로 데이터를 다운로드 받는다.
+
+        Args:
+            url (str): 대상 데이터의 url
+            remove_old (bool): 기존 파일이 존재하는 경우, 기존 파일을 제거하고 다시 설치할지 여부
+
+        Returns:
+            bool: 다운로드 성공 여부
+        """
+        # url을 기반으로 파일 경로를 생성한다.
+        file_name = url.split("/")[-1]
+        file_path = f"{cls.parents_path}/{file_name}"
+        # file 다운로드 및 다운로드 완료 여부 출력
+        return file_download(url, local_path=file_path, remove_old=remove_old)
+        
+        
+        
+        
+    # 재개발
+    ###########################################################################
     @classmethod
     def load(
             cls, data_name: Optional[str] = None
