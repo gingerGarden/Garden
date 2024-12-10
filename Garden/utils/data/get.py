@@ -5,24 +5,32 @@ import warnings
 import pandas as pd
 from pprint import pprint
 
-from ..path import load_pickle
-
+from ..path import load_pickle, new_dir_maker
 
 
 class Get:
-    # package directory의 기본 경로
-    package_dir = os.path.dirname(__file__)
-    # data의 기본 경로
-    path_dict = {
-        "student(math)":f"{package_dir}/tabular/student-mat.pickle"
+    # data의 기본 url
+    urls = {
+        "student-mat":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-mat.pickle",
+        "student-por":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/source/tabular/student-por.pickle"
     }
-    # metadata key
-    metadata_key = "metadata"
-    # attribute key
-    attribute_key = "attribute"
-    # data key
-    data_key = "data"
-    
+    data_key = {
+        "metadata":"metadata",
+        "attribute":"attribute",
+        "data":"data"
+    }
+    parents_dir = ".garden"
+
+    @classmethod
+    def show_data_list(cls) -> List[str]:
+        """
+        Garden에서 지원하는 샘플 데이터의 key list를 반환한다.
+
+        Returns:
+            List[str]: Garden에서 지원하는 데이터의 key list
+        """
+        return list(cls.urls.keys())
+
     @classmethod
     def load(
             cls, data_name: Optional[str] = None
