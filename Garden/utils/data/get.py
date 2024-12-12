@@ -11,18 +11,18 @@ from ..path import load_pickle, new_dir_maker, file_download
 class Get:
     datas = {
         "student-mat(tabular)":{
-            "type":"tabular",
-            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-mat.pickle"
-            },
-        "student-por(tabular)":{
-            "type":"tabular",
-            "url":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-por.pickle"
+            "info":{"type":"file", "name":"student-mat.pickle"},
+            "urls":{"url1":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-mat.pickle"}
         },
-        "coco(image)":{
-            "type":"zip",
-            "url":{
-                "images":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_images.zip",
-                "annotations":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_annotaions.json"
+        "student-por(tabular)":{
+            "info":{"type":"file", "name":"student-por.pickle"},
+            "urls":{"url1":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/tabular/student-por.pickle"}
+        },
+        "student-por(tabular)":{
+            "info":{"type":"directory", "name":"coco"},
+            "urls":{
+                "url1":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_images.zip",
+                "url2":"https://github.com/gingerGarden/Garden/raw/refs/heads/main/sample_data/image/coco/sample_annotaions.json"
             }
         }
     }
