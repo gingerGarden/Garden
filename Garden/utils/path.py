@@ -3,6 +3,7 @@ import os
 import pickle
 import shutil
 import logging
+import zipfile
 from collections.abc import Callable
 from typing import Any, Dict, List, Optional, Union
 
@@ -44,7 +45,7 @@ def new_dir_maker(dir_path: str, makes_new=True):
     """
     if os.path.exists(dir_path):
         if makes_new:
-            shutil.rmtree(dir_path)
+            remove_target_path(target_path=dir_path)
             os.mkdir(dir_path)
         else:
             pass
@@ -141,6 +142,41 @@ def append_to_json(json_path: str, line: Union[Dict[str, Any], List[Any], str]):
             line, f, ensure_ascii=False
         )  # ASCII 형식 대신 utf-8로 저장하여, 한글, 특수 문자 등 유지
         f.write("\n")  # line 간 구분을 위해 줄바꿈 추가
+        
+        
+def unzip(file_path: str, unzip_name: Optional[str] = None, remove_zipfile: bool = False):
+    """
+    대상 file이 zipfile인 경우, 해당 zipfile을 해제한다.
+        - 압축 해제 후, 디렉터리명 설정 가능(unzip_name is not None)
+        - 압축 해제 후, zipfile 제거 여부(remove_zipfile = True)
+
+    Args:
+        file_path (str): zipfile로 의심되는 file의 경로
+        unzip_name (Optional[str], optional): 압축 해제할 디렉터리명(동일 경로에 생성). Defaults to None.
+        remove_zipfile (bool, optional): 압축 파일 제거 여부. Defaults to False.
+    """
+    # ZIP 파일 확인
+    if not zipfile.is_zipfile(file_path):
+        raise ValueError(f"{file_path}는 ZIP 파일이 아닙니다.")
+    
+    # 해제 디렉터리명 생성
+    if unzip_name is None:
+        extract_to_dir = os.path.splitext(file_path)[0]
+    else:
+        parents_path = os.path.dirname(parents_path)
+        extract_to_dir = os.path.join(parents_path, unzip_name)
+    
+    # 해제 디렉터리가 이미 존재하는 경우, 정지
+    if os.path.exists(extract_to_dir):
+        raise RuntimeError(f"{extract_to_dir} 경로가 이미 존재합니다. unzip_name을 수정하십시오.")
+        
+    # 압축 해제
+    with zipfile.ZipFile(file_path, 'r') as zip_ref:
+        zip_ref.extractall(extract_to_dir)
+        
+    # 압축 파일 제거
+    if remove_zipfile:
+        os.remove(file_path)        
 
 
 def read_txt_file(file_path: str) -> str:
