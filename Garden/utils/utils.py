@@ -162,3 +162,29 @@ def kwargs_filter(fn: Callable, params_dict: Dict[str, Any]) -> Dict[str, Any]:
         )
     else:
         return filtered_params_dict
+
+
+
+def convert_byte_to_readable(byte_size:int, digit_number:int=2, lower:bool=True) -> str:
+    """
+    byte_size(byte)를 사람이 인식하기 쉬운 문자열로 변환한다.
+    example) 2000 = "1.95 kb"
+
+    Args:
+        byte_size (int): byte
+        digit_number (int, optional): 표현할 소수점 자리 수. Defaults to 2.
+        lower (bool, optional): 단위를 소문자로 출력할지 여부. Defaults to True.
+
+    Returns:
+        str: 사람이 인식하기 쉬운 단위로 변환된 byte 문자열
+    """
+    _units = [
+        'b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'
+    ] if lower else [
+        'B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'
+    ]
+
+    for i, unit in enumerate(_units):
+        if byte_size < 1024 or i == len(_units) - 1:    # 마지막 단위에 도달하면 그대로 반환
+            return f"{byte_size:.{digit_number}f} {unit}"
+        byte_size /= 1024
