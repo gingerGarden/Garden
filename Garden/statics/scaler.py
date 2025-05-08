@@ -21,10 +21,10 @@ def min_max(array: np.ndarray) -> np.ndarray:
     >>> max와 min이 동일한 경우, 나누기 연산을 방지하기 위해 아주 작은 값을 대신 사용.
 
     Args:
-        array (np.ndarray): _description_
+        array (np.ndarray): 변환하고자 하는 넘파이 배열
 
     Returns:
-        np.ndarray: _description_
+        np.ndarray: 0과 1 사이의 값으로 변환된 배열
     """
     min_score = np.min(array)
     max_score = np.max(array)
