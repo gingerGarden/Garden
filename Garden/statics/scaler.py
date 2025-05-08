@@ -54,27 +54,7 @@ def min_max_range_normalization(array: np.ndarray, min: float, max: float) -> np
 def z_score_normalization(array: np.ndarray) -> np.ndarray:
     """
     평균을 0으로, 표준편차를 1로 하는 z-score 정규화한다.
-    >>> 표준편차가 0일 경우(즉, 모든 값이 동일한 경우), 나누기 연산을 방지하기 위해 아주 작은 값을 대신 사용.
-
-    Args:
-        np_array (np.ndarray): 실수로 이루어진 배열
-
-    Returns:
-        np.ndarray: z정규화된 배열
-    """
-    mean_score = np.mean(array)
-    std_score = small_denominator(np.std(array))  # 분모가 0인지 확인
-    return (array - mean_score) / std_score
-
-
-def natural_logarithm(array: np.ndarray, very_small_value: int = 1e-8) -> np.ndarray:
-    """
-    배열에 대한 자연 로그 계산
-    >>> 음수 또는 0인 값에 대하여 로그 치환이 불가능하므로, 데이터의 분포를 유지한 상태로 모든 값을 양수로 만듦.
-
-    Args:
-        array (np.ndarray): 자연 로그로 치환하고자 하는 배열
-        very_small_value (float, optional): _description_. Defaults to 1e-8.
+    >값. Defaults to 1e-8.
 
     Returns:
         np.ndarray: 자연 로그 치환된 배열
