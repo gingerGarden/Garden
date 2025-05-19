@@ -51,10 +51,13 @@ def min_max_range_normalization(array: np.ndarray, min: float, max: float) -> np
     return (((array - array_min) / denominator) * (max - min)) + min
 
 
-def z_score_normalization(array: np.ndarray) -> np.ndarray:
+def ln(array: np.ndarray, very_small_value: float = 1e-8) -> np.ndarray:
     """
-    평균을 0으로, 표준편차를 1로 하는 z-score 정규화한다.
-    >값. Defaults to 1e-8.
+    입력된 배열을 자연로그 치환한다
+
+    Args:
+        array (np.ndarray): 대상 배열열
+        very_small_value (float, optional): 0을 log 치환하는 것을 피하기 위해 더하는 매우 작은 값. Defaults to 1e-8.
 
     Returns:
         np.ndarray: 자연 로그 치환된 배열
