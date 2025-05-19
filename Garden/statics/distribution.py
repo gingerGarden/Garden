@@ -34,7 +34,7 @@ def normal(max: float = None, size: int = 50) -> np.ndarray:
     """
     basic = np.random.normal(0, 1, size)
     if max is not None:
-        dist = scaler.min_max_scaling(basic) * max
+        dist = scaler.min_max(array=basic) * max
     else:
         dist = basic
     return dist
